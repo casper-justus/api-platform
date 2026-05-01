@@ -1,0 +1,17 @@
+# Global owner — all files
+* @casper-justus
+
+# Auth module
+src/modules/auth/ @casper-justus
+
+# Database schema & migrations
+src/db/ @casper-justus
+
+# API route modules
+src/modules/ @casper-justus
+
+# Tests
+test/ @casper-justus
+
+# CI/CD & security workflows
+.github/workflows/ @casper-justus
