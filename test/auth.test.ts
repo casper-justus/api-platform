@@ -43,12 +43,13 @@ describe("POST /api/auth/register", () => {
     expect(res.body.user.name).toBe("New User");
     expect(res.body.user).not.toHaveProperty("passwordHash");
 
-    await db.delete(refreshTokensTable);
+    const userId = res.body.user.id;
+    await db.delete(refreshTokensTable).where(eq(refreshTokensTable.userId, userId));
     await db.delete(usersTable).where(eq(usersTable.email, "newuser@example.com"));
   });
 
   it("rejects duplicate email", async () => {
-    await request(app).post("/api/auth/register").send({
+    const first = await request(app).post("/api/auth/register").send({
       email: "duplicate@example.com",
       password: "password123",
       name: "First",
@@ -63,7 +64,8 @@ describe("POST /api/auth/register", () => {
     expect(res.status).toBe(409);
     expect(res.body).toHaveProperty("error");
 
-    await db.delete(refreshTokensTable);
+    const userId = first.body.user.id;
+    await db.delete(refreshTokensTable).where(eq(refreshTokensTable.userId, userId));
     await db.delete(usersTable).where(eq(usersTable.email, "duplicate@example.com"));
   });
 
