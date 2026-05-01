@@ -10,20 +10,37 @@ import taskRoutes from "./modules/tasks/taskRoutes.js";
 import { errorHandler } from "./db/middleware/errorHandler.js";
 import { swaggerSpec } from "./config/swagger.js";
 import swaggerUi from "swagger-ui-express";
+import {
+  helmetMiddleware,
+  authLimiter,
+  apiLimiter,
+  hppMiddleware,
+} from "./db/middleware/security.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(helmetMiddleware);
 
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(morgan(process.env.NODE_ENV === "test" ? "combined" : "dev"));
 app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+app.use(hppMiddleware);
+
+app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/users", apiLimiter, userRoutes);
+app.use("/api/projects", apiLimiter, projectRoutes);
+app.use("/api/tasks", apiLimiter, taskRoutes);
 
 app.use(
   "/api-docs",
@@ -47,11 +64,6 @@ app.get("/health", (_req, res) => {
     environment: process.env.NODE_ENV,
   });
 });
-
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/projects", projectRoutes);
-app.use("/api/tasks", taskRoutes);
 
 app.use(errorHandler);
 
