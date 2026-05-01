@@ -1,0 +1,31 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "roots": ["<rootDir>/test"],
+  "testMatch": ["**/*.test.ts"],
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/app.ts",
+    "!src/db/migrations/**",
+    "!src/config/**"
+  ],
+  "coverageDirectory": "coverage",
+  "coverageReporters": ["text", "lcov", "html"],
+  "setupFiles": ["<rootDir>/test/setup.ts"],
+  "clearMocks": true,
+  "verbose": true,
+  "testTimeout": 30000,
+  "maxWorkers": 1,
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  },
+  "transform": {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        "useESM": false
+      }
+    ]
+  }
+}
