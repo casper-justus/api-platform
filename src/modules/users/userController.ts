@@ -8,6 +8,11 @@ import { updateUserSchema } from "../../db/schema/users.js";
 import { AppError } from "../../db/middleware/errorHandler.js";
 
 export const getMe = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) {
+    throw new AppError("Authentication required", 401);
+  }
+
   const [user] = await db
     .select({
       id: usersTable.id,
@@ -20,7 +25,7 @@ export const getMe = async (req: AuthRequest, res: Response) => {
       updatedAt: usersTable.updatedAt,
     })
     .from(usersTable)
-    .where(eq(usersTable.id, req.userId!))
+    .where(eq(usersTable.id, userId))
     .limit(1);
 
   if (!user) {
@@ -31,12 +36,17 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 };
 
 export const updateMe = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) {
+    throw new AppError("Authentication required", 401);
+  }
+
   const validated = updateUserSchema.parse(req.body);
 
   const [user] = await db
     .update(usersTable)
     .set({ ...validated, updatedAt: new Date() })
-    .where(eq(usersTable.id, req.userId!))
+    .where(eq(usersTable.id, userId))
     .returning({
       id: usersTable.id,
       email: usersTable.email,
@@ -56,9 +66,14 @@ export const updateMe = async (req: AuthRequest, res: Response) => {
 };
 
 export const changePassword = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) {
+    throw new AppError("Authentication required", 401);
+  }
+
   const { currentPassword, newPassword } = req.body;
 
-  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, req.userId!)).limit(1);
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
 
   if (!user) {
     throw new AppError("User not found", 404);
@@ -74,7 +89,7 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
   await db
     .update(usersTable)
     .set({ passwordHash, updatedAt: new Date() })
-    .where(eq(usersTable.id, req.userId!));
+    .where(eq(usersTable.id, userId));
 
   res.json({ message: "Password updated successfully" });
 };

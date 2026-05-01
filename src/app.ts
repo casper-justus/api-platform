@@ -16,6 +16,7 @@ import {
   apiLimiter,
   hppMiddleware,
 } from "./db/middleware/security.js";
+import { sanitizeInput } from "./db/middleware/sanitize.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(hppMiddleware);
+app.use(sanitizeInput);
 
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", apiLimiter, userRoutes);

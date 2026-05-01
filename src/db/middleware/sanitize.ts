@@ -28,11 +28,8 @@ function sanitizeObject(obj: unknown): unknown {
 }
 
 export const sanitizeInput = (req: Request, _res: Response, next: NextFunction) => {
-  if (req.body && typeof req.body === "object") {
+  if (req.body && typeof req.body === "object" && !Array.isArray(req.body)) {
     req.body = sanitizeObject(req.body) as Record<string, unknown>;
-  }
-  if (req.query && typeof req.query === "object") {
-    req.query = sanitizeObject(req.query) as Record<string, string>;
   }
   next();
 };
