@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --runInBand --forceExit --detectOpenHandles",
     "db:migrate": "drizzle-kit migrate",
-    "start": "ts-node src/app.ts",
+    "start": "node --import tsx/esm src/app.ts",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write src/**/*.{ts,json} test/**/*.{ts,json}"
@@ -53,6 +53,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^6.0.3"
   }
 }
