@@ -2,7 +2,7 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm install && npx drizzle-kit migrate --ommit=dev "
+    "buildCommand": "npm install --omit=dev && npx drizzle-kit migrate  "
   },
   "deploy": {
     "startCommand": "npm start",
