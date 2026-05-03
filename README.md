@@ -116,6 +116,23 @@ API runs at `http://localhost:3000`
 npm test
 ```
 
+## Environment Variables
+
+All required variables — set these in the Railway **Variables** tab or in your local `.env` file.
+
+| Variable | Required | Description | Example |
+|---|---|---|---|
+| `DATABASE_URL` | ✅ | PostgreSQL connection string. Auto-injected by the Railway PostgreSQL plugin. | `postgresql://user:pass@host:5432/db` |
+| `JWT_SECRET` | ✅ | Secret key for signing access tokens. Use a long random string. | `openssl rand -hex 64` |
+| `JWT_REFRESH_SECRET` | ✅ | Separate secret for signing refresh tokens. **Must differ from `JWT_SECRET`.** | `openssl rand -hex 64` |
+| `JWT_EXPIRES_IN` | ✅ | Access token lifetime. Keep short for security. | `15m` |
+| `JWT_REFRESH_EXPIRES_IN` | ✅ | Refresh token lifetime. | `7d` |
+| `PORT` | ✅ | Port the server listens on. Railway injects this automatically. | `3000` |
+| `NODE_ENV` | ✅ | Runtime environment. | `production` |
+| `CORS_ORIGIN` | Optional | Allowed CORS origin. Defaults to `*`. Set to your frontend URL in production. | `https://your-frontend.vercel.app` |
+
+> **Tip:** Generate secure secrets with `openssl rand -hex 64` and never reuse the same value for `JWT_SECRET` and `JWT_REFRESH_SECRET`.
+
 ## Project Structure
 
 ```
@@ -147,9 +164,9 @@ api-platform/
 
 1. Sign up at [Railway](https://railway.app)
 2. Connect your GitHub repository
-3. Add a PostgreSQL database service
-4. Set environment variables from `.env.example`
-5. Deploy - Railway handles build and deployment automatically
+3. Add a **PostgreSQL** database service — Railway will auto-inject `DATABASE_URL`
+4. Set all required environment variables from the table above in the **Variables** tab
+5. Deploy — Railway handles build and start automatically
 
 ## License
 
