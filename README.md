@@ -16,6 +16,7 @@ Built a production-grade REST API with JWT authentication, refresh token rotatio
 - Auto-generated Swagger/OpenAPI documentation
 - GitHub Actions CI/CD pipeline
 - One-click Railway deployment
+- Companion Rust API for health, text analysis, and slug generation
 
 ## Tech Stack
 
@@ -109,6 +110,29 @@ npm start
 API runs at `http://localhost:3000`
 - Swagger docs: `http://localhost:3000/api-docs`
 - Health check: `http://localhost:3000/health`
+
+### Rust utility API
+
+The optional Axum service provides small, stateless text utilities alongside the main API. It listens on port `3001` by default; set `RUST_API_PORT` (or `PORT`) to change it.
+
+```bash
+cd rust-api
+cargo run --release
+```
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Service health and version envelope |
+| POST | `/api/v1/text/analyze` | Count characters, words, lines, and UTF-8 bytes |
+| POST | `/api/v1/text/slugify` | Generate a lowercase, Unicode-aware slug |
+
+Both POST endpoints accept `{"text":"Hello, API Platform!"}` and return a `data` object with service/version metadata. Invalid empty input returns a structured `400` error. Request bodies are limited to 64 KiB.
+
+```bash
+curl -X POST http://localhost:3001/api/v1/text/analyze \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"Hello, API Platform!"}'
+```
 
 ### Running Tests
 
